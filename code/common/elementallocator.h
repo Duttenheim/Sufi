@@ -1,12 +1,23 @@
+#pragma once
 /**
     Element allocator interface
 
     Retrieves a new ID from a pool of available IDs, and informs the allocee if a previously unused ID was returned or not
-*/ 
-#include <cstdint>
 
-typedef Id uint32_t;
-struct IdPool;
+*/
+#include <cstdint>
+#include "mem.h"
+
+typedef uint32_t Id;
+
+struct IdPool
+{
+    VirtualMemoryAllocator allocator;
+    size_t freeIdsSize;
+    size_t freeIdsMaxSize;
+
+    size_t ids;
+};
 
 struct IdPoolSetupInfo
 {
@@ -14,11 +25,11 @@ struct IdPoolSetupInfo
 };
 
 /// Construct a new allocator
-IdPool CreateAllocator(const IdPoolSetupInfo info);
+IdPool CreateIdPool(const IdPoolSetupInfo info);
 /// Destroy allocator
-void DestroyAllocator(IdPool* pool);
+void DestroyIdPool(IdPool* pool);
 
 /// Allocates a new ID, returns true if a new value was allocated
-bool Allocate(IdPool* pool, Id& id);
+bool IdPoolAllocate(IdPool* pool, Id& id);
 /// Frees an ID
-void Free(IdPool* pool, const Id id);
+void IdPoolFree(IdPool* pool, const Id id);
