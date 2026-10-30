@@ -20,6 +20,7 @@ struct Array
 {
     size_t size;
     size_t capacity;
+    size_t maxCapacity;
     VirtualMemoryAllocator allocator;
 };
 

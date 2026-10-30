@@ -106,13 +106,13 @@ DestroyVirtualMemoryAllocator(VirtualMemoryAllocator* allocator)
 /**
 */
 void 
-AllocateVirtualMemory(VirtualMemoryAllocator* allocator, size_t size)
+AllocateVirtualMemory(VirtualMemoryAllocator* allocator, size_t size, size_t alignment)
 {
     assert(SystemPageSize != 0);
 
     // Determine the number of pages needed
     size_t numCommitedPages = allocator->capacity / SystemPageSize;
-    size_t numPagesNeeded = ceil(((allocator->size + size) / float(SystemPageSize)));
+    size_t numPagesNeeded = ceil((align(allocator->size + size, alignment) / float(SystemPageSize)));
 
     // If we need more space, commit more memory
     if (numCommitedPages < numPagesNeeded)

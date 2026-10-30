@@ -35,6 +35,6 @@ VirtualMemoryAllocator CreateVirtualMemoryAllocator(const VirtualMemoryAllocator
 /// Destroy a virtual memory allocator, free it's memory
 void DestroyVirtualMemoryAllocator(VirtualMemoryAllocator* allocator);
 /// Grow the committed memory range, commits new pages as needed
-void AllocateVirtualMemory(VirtualMemoryAllocator* allocator, size_t size);
+void AllocateVirtualMemory(VirtualMemoryAllocator* allocator, size_t size, size_t alignment = 1);
 /// Deallocate virtual memory, decommits pages at the tail end if the new size requires fewer pages than before
 void DeallocateVirtualMemory(VirtualMemoryAllocator* allocator, size_t size);
