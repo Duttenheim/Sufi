@@ -16,6 +16,7 @@ CreateArray(const ArrayCreateInfo& info)
     Array ret;
     ret.size = 0;
     ret.capacity = 0;
+    ret._itemSize = info.itemSize;
     ret.maxCapacity = info.maxNumItems * info.itemSize;
     VirtualMemoryAllocatorCreateInfo allocInfo;
     allocInfo.maxSize = info.maxNumItems * info.itemSize;
@@ -45,9 +46,15 @@ ArrayPush(Array* arr)
     assert(arr->size + 1 < arr->maxCapacity);
 
     // Ensure space is committed
-    AllocateVirtualMemory(&arr->allocator, arr->itemSize);
-    void* ret = arr->allocator.data + arr->size * arr->itemSize;
+    if (arr->size + 1 > arr->capacity)
+    {
+        AllocateVirtualMemory(&arr->allocator, arr->_itemSize);
+    }
+    void* ret = (byte*)arr->allocator.data + arr->size * arr->_itemSize;
     arr->size++;
+    
+    // Calculate array capacity based on allocator capacity and item size
+    arr->capacity = arr->allocator.capacity / arr->_itemSize;
     return ret;
 }
 
@@ -68,11 +75,11 @@ void
 ArrayDeleteIndex(Array* arr, size_t index)
 {
     assert(index < arr->size);
-    void* ptr = arr->allocator.data + index * arr->itemSize;
+    void* ptr = (byte*)arr->allocator.data + index * arr->_itemSize;
     arr->size--;
 
     // Shift elements to the left
-    memmove(ptr, ptr + arr->itemSize, (arr->size - index) * arr->itemSize);
+    std::memmove(ptr, (byte*)ptr + arr->_itemSize, (arr->size - index) * arr->_itemSize);
 }
 
 //-------------------------------------------------------------------------
@@ -81,7 +88,7 @@ ArrayDeleteIndex(Array* arr, size_t index)
 void
 ArrayDeletePtr(Array* arr, void* ptr)
 {
-    assert(ptr >= arr->allocator.data && ptr < arr->allocator.data + arr->maxCapacity);
-    size_t index = (ptr - arr->allocator.data) / arr->itemSize;
+    assert(ptr >= arr->allocator.data && ptr < (byte*)arr->allocator.data + arr->maxCapacity);
+    size_t index = ((byte*)ptr - (byte*)arr->allocator.data) / arr->_itemSize;
     ArrayDeleteIndex(arr, index);
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <assert.h>
+#include <cstring>
 #include "system.h"
 
 typedef char byte;

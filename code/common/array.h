@@ -18,6 +18,7 @@ struct ArrayCreateInfo
 
 struct Array
 {
+    size_t _itemSize;
     size_t size;
     size_t capacity;
     size_t maxCapacity;
@@ -37,3 +38,27 @@ void ArrayPop(Array* arr);
 void ArrayDeleteIndex(Array* arr, size_t index);
 /// Remove item from array using pointer
 void ArrayDeletePtr(Array* arr, void* ptr);
+
+/// Push typed item to array and return typed pointer
+template<typename T>
+inline T* ArrayPush(Array* arr, const T& t)
+{
+    void* ptr = ArrayPush(arr);
+    T* typedPtr = static_cast<T*>(ptr);
+    *typedPtr = t;
+    return typedPtr;
+}
+
+/// Get typed item from array using index
+template<typename T>
+inline const T& ArrayGet(Array* arr, size_t index)
+{
+    return ((T*)arr->allocator.data)[index];
+}
+
+/// Get typed pointer from array using index
+template<typename T>
+inline T* ArrayGetPtr(Array* arr, size_t index)
+{
+    return &((T*)arr->allocator.data)[index];
+}
