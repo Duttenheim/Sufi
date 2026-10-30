@@ -46,10 +46,7 @@ ArrayPush(Array* arr)
     assert(arr->size + 1 < arr->maxCapacity);
 
     // Ensure space is committed
-    if (arr->size + 1 > arr->capacity)
-    {
-        AllocateVirtualMemory(&arr->allocator, arr->_itemSize);
-    }
+    AllocateVirtualMemory(&arr->allocator, arr->_itemSize);
     void* ret = (byte*)arr->allocator.data + arr->size * arr->_itemSize;
     arr->size++;
     

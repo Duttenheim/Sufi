@@ -1,6 +1,6 @@
 # SUFI_TARGET is the target sufi_files and sufi_add_dependencies apply to.
-# SUFI_DIR is the current folder. SUFI_DIR_STACK holds the folders pushed
-# before it. "." means the directory of the calling CMakeLists.
+# SUFI_DIR is the current folder, relative to the calling CMakeLists.
+# "." means that directory. sufi_dir replaces it and does not nest.
 
 # sufi_target(<name> SUFI_EXECUTABLE|SUFI_LIBRARY)
 macro(sufi_target name type)
@@ -24,32 +24,14 @@ macro(sufi_target name type)
     unset(_sufi_type)
 endmacro()
 
+# sufi_dir([folder])
+# Sets SUFI_DIR to the folder, relative to the calling CMakeLists.
+# A call with no folder resets it to that directory. Calls do not nest.
 macro(sufi_dir)
-    if(NOT DEFINED SUFI_DIR OR "${SUFI_DIR}" STREQUAL "")
-        set(SUFI_DIR ".")
-    endif()
-    if(NOT DEFINED SUFI_DIR_STACK)
-        set(SUFI_DIR_STACK)
-    endif()
-
-    # No argument pops back to the previous folder.
     if(${ARGC} EQUAL 0)
-        list(LENGTH SUFI_DIR_STACK _sufi_len)
-        if(_sufi_len EQUAL 0)
-            message(FATAL_ERROR "sufi_dir: directory stack is empty")
-        endif()
-        math(EXPR _sufi_last "${_sufi_len} - 1")
-        list(GET SUFI_DIR_STACK ${_sufi_last} SUFI_DIR)
-        list(REMOVE_AT SUFI_DIR_STACK ${_sufi_last})
-        unset(_sufi_len)
-        unset(_sufi_last)
+        set(SUFI_DIR ".")
     else()
-        list(APPEND SUFI_DIR_STACK "${SUFI_DIR}")
-        if("${SUFI_DIR}" STREQUAL ".")
-            set(SUFI_DIR "${ARGV0}")
-        else()
-            set(SUFI_DIR "${SUFI_DIR}/${ARGV0}")
-        endif()
+        set(SUFI_DIR "${ARGV0}")
     endif()
 endmacro()
 

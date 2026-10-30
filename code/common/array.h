@@ -43,6 +43,7 @@ void ArrayDeletePtr(Array* arr, void* ptr);
 template<typename T>
 inline T* ArrayPush(Array* arr, const T& t)
 {
+    assert(sizeof(T) == arr->_itemSize);
     void* ptr = ArrayPush(arr);
     T* typedPtr = static_cast<T*>(ptr);
     *typedPtr = t;

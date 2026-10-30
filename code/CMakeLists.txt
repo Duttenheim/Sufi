@@ -12,3 +12,9 @@ sufi_files(
     system.cc
     system.h
 )
+
+sufi_dir(layouting)
+sufi_files(
+    guide.h
+    viewport.h
+)

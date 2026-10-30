@@ -8,11 +8,11 @@ int main(int argc, char** argv)
 
     ArrayCreateInfo arrayInfo;
     arrayInfo.itemSize = sizeof(int);
-    arrayInfo.maxNumItems = 1024;
+    arrayInfo.maxNumItems = SystemPageSize;
     Array array = CreateArray(arrayInfo);
 
     // Push some items
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < SystemPageSize; i++) {
         ArrayPush(&array, i);
     }
     

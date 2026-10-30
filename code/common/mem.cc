@@ -121,6 +121,7 @@ AllocateVirtualMemory(VirtualMemoryAllocator* allocator, size_t size, size_t ali
         vcommit((byte*)allocator->data + allocator->capacity, newPagesNeeded * SystemPageSize);
         allocator->capacity += newPagesNeeded * SystemPageSize;
     }
+    allocator->size += size;
 }
 
 //-------------------------------------------------------------------------
